@@ -1,0 +1,17 @@
+@keyframes drop {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(5px);
+    }
+}
+
+.hover-drop {
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
+}
+
+.hover-drop:hover {
+    animation: drop 0.2s forwards;
+}
