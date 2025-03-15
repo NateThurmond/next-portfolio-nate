@@ -14,8 +14,9 @@ export default function Header() {
   }, []);
 
   // Calculate shrinking effect (caps at 50px height)
-  const headerSize = Math.max(50, 150 - scrollY * 0.5);
-  const opacity = Math.max(0, 1 - scrollY / 300); // Fades out completely after 300px
+  const maxHeaderSize = 65; // As tall as it gets
+  const headerSize = Math.max(50, maxHeaderSize - scrollY * 0.5);
+  const opacity = Math.max(0, 1 - scrollY / (maxHeaderSize * 2)); // Fades out completely after 300px
 
   return (
     <header
