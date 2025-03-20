@@ -1,4 +1,8 @@
-const GITHUB_USERNAME = process.env.GITHUB_USERNAME || 'NateThurmond'; // Your GitHub username
+import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
+
+const GITHUB_USERNAME = process.env.GITHUB_USERNAME || 'NateThurmond';
 const REPO_NAMES = [
     "SuperShop",
     "MechDesign",
@@ -10,11 +14,10 @@ const REPO_NAMES = [
 ];
 const GITHUB_API_BASE = "https://api.github.com/repos";
 
-/**
- * Fetch GitHub project details for specified repositories.
- * Uses auth token if available (for dev use).
- */
-export async function fetchGitHubProjects() {
+// Path to static JSON fallback file
+const PROJECTS_JSON_PATH = path.resolve(process.cwd(), 'data', 'projects.json');
+
+export async function GET() {
   const headers: Record<string, string> = {};
   // Used to extract demo use gifs from project readmes
   const repoDemoGifRegMatch = /<img\s+[^>]*src=["']([^"']+)["']/i;
@@ -73,10 +76,25 @@ export async function fetchGitHubProjects() {
     });
 
     const projects = await Promise.all(repoRequests);
-    return projects;
+
+    // Save to disk in dev mode OR if a specific env flag is set
+    if (process.env.NODE_ENV === "development" || process.env.SAVE_PROJECTS_JSON === "true") {
+      fs.writeFileSync(PROJECTS_JSON_PATH, JSON.stringify(projects, null, 2), 'utf-8');
+      console.log(`Project data saved to ${PROJECTS_JSON_PATH}`);
+    }
+
+    return NextResponse.json(projects);
+
   } catch (error) {
     console.error("GitHub API error:", error);
-    // TO-DO: Fallback to static project json that are periodically updated from dev workflow
-    return null;
+    console.warn("Falling back to static JSON file...");
+
+    try {
+      const fallbackData = fs.readFileSync(PROJECTS_JSON_PATH, 'utf-8');
+      return NextResponse.json(JSON.parse(fallbackData));
+    } catch (fallbackError) {
+      console.error("Failed to load fallback JSON file:", fallbackError);
+      return NextResponse.json({ error: "Failed to load project data." }, { status: 500 });
+    }
   }
 }
