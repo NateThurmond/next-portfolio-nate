@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
@@ -17,7 +16,7 @@ const GITHUB_API_BASE = "https://api.github.com/repos";
 // Path to static JSON fallback file
 const PROJECTS_JSON_PATH = path.resolve(process.cwd(), 'data', 'projects.json');
 
-export async function GET() {
+export async function fetchGitHubProjects() {
   const headers: Record<string, string> = {};
   // Used to extract demo use gifs from project readmes
   const repoDemoGifRegMatch = /<img\s+[^>]*src=["']([^"']+)["']/i;
@@ -78,12 +77,12 @@ export async function GET() {
     const projects = await Promise.all(repoRequests);
 
     // Save to disk in dev mode OR if a specific env flag is set
-    if (process.env.NODE_ENV === "development" || process.env.SAVE_PROJECTS_JSON === "true") {
+    if (process.env.SAVE_PROJECTS_JSON === "true") {
       fs.writeFileSync(PROJECTS_JSON_PATH, JSON.stringify(projects, null, 2), 'utf-8');
       console.log(`Project data saved to ${PROJECTS_JSON_PATH}`);
     }
 
-    return NextResponse.json(projects);
+    return projects;
 
   } catch (error) {
     console.error("GitHub API error:", error);
@@ -91,10 +90,10 @@ export async function GET() {
 
     try {
       const fallbackData = fs.readFileSync(PROJECTS_JSON_PATH, 'utf-8');
-      return NextResponse.json(JSON.parse(fallbackData));
+      return JSON.parse(fallbackData);
     } catch (fallbackError) {
       console.error("Failed to load fallback JSON file:", fallbackError);
-      return NextResponse.json({ error: "Failed to load project data." }, { status: 500 });
+      return null;
     }
   }
 }
