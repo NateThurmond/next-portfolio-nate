@@ -1,11 +1,22 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import InteractiveHeading from "./components/InteractiveHeading";
 import Header from "./components/Header";
 import ProjectTiles from "./components/ProjectTiles";
 
 export default function Home() {
+
+  useEffect(() => {
+    async function getProjects() {
+      const res = await fetch('/api/projects');
+      const projects = await res.json();
+      console.log(projects);
+    }
+    getProjects();
+  }, []);
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center w-full max-w-4xl mx-auto">
