@@ -10,6 +10,7 @@
     "update-projects": "cross-env SAVE_PROJECTS_JSON=true tsx scripts/updateProjects.ts"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "next": "15.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

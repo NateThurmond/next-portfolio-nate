@@ -1,5 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+if (process.env.NODE_ENV === 'development') {
+  dotenv.config({ path: '.env.devsecrets' });
+}
 
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME || 'NateThurmond';
 const REPO_NAMES = [
