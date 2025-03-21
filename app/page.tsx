@@ -1,21 +1,28 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import InteractiveHeading from "./components/InteractiveHeading";
 import Header from "./components/Header";
 import ProjectTiles from "./components/ProjectTiles";
 
 export default function Home() {
+  const [projects, setProjects] = useState([]);
+  const [projectReady, setProjectReady] = useState('');
 
   useEffect(() => {
-    async function getProjects() {
+    (async () => {
       const res = await fetch('/api/projects');
-      const projects = await res.json();
-      console.log(projects);
-    }
-    getProjects();
-  }, []);
+      const myProjects = await res.json();
+      setProjects(myProjects);
+      setProjectReady('Projects Ready');
+    })();
+  }, []); // Similar to componentDidMount, only fire once
+
+  // Keeping as an example of how to use useEffect (componentDidUpdate)
+  useEffect(() => {
+    console.log('setProjectReady has been updated:', projectReady);
+  }, [projectReady]); // Listen for changes to state vars
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -69,7 +76,7 @@ export default function Home() {
             Read our docs
           </a>
         </div>
-        <ProjectTiles />
+        <ProjectTiles projects={projects}/>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a
