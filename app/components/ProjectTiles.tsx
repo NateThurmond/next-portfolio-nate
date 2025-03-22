@@ -6,14 +6,28 @@ type ProjectTilesProps = {
 };
 
 export default function ProjectTiles({projects}: ProjectTilesProps) {
-    const tiles = [
-      { title: "Project 1", link: "#" },
-      { title: "Project 2", link: "#" },
-      { title: "Project 3", link: "#" },
-      { title: "Project 4", link: "#" },
-      { title: "Project 5", link: "#" },
-      { title: "Project 6", link: "#" },
-    ];
+    // Specific to my situation, define your own as needed
+    const priorityOrder = [
+      "MechDesign",
+      "SuperShop",
+      "MechDesign-php",
+      "MechMarkup",
+      "RemoteView",
+      "EnphasePyGraph",
+    ]
+
+    // List the projects out in such a way that they look okay for my specific repos
+    function sortProjects(projects: any[]) {
+      return [...projects].sort((a, b) => {
+        const indexA = priorityOrder.indexOf(a.name);
+        const indexB = priorityOrder.indexOf(b.name);
+
+        if (indexA === -1 && indexB === -1) return 0;
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+      });
+    }
 
     useEffect(() => {
       console.log('Projects available', projects);
@@ -21,14 +35,18 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
 
     return (
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-8 w-full mx-auto">
-        {projects && projects.map((project, index) => (
-          <a
-            key={index}
-            href={project.url}
-            className="text-gray-700 bg-gray-200 p-6 rounded-md shadow-md text-center text-lg font-bold transition-transform duration-200 hover:scale-105"
-          >
-            {project.name}
-          </a>
+        {projects && sortProjects(projects).map((project, index) => (
+          <div key={index} className="bg-gray-200 p-6 rounded-md shadow-md flex flex-col items-center">
+            <a
+              href={project.url}
+              className="text-gray-700 text-center text-lg font-bold transition-transform duration-200 hover:scale-105 block"
+            >
+              {project.name}
+            </a>
+            <div className="w-80 h-60 bg-gray-900 flex items-center justify-center mt-4">
+              <img src={project.repoDemoGifAbsolute} alt="Demo" className="object-contain max-w-full max-h-full block" />
+            </div>
+          </div>
         ))}
       </section>
     );
