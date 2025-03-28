@@ -30,6 +30,20 @@ export async function fetchGitHubProjects() {
     headers["Authorization"] = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
 
+  const bytesToPercentages = (record: Record<string, number>): Record<string, number> => {
+    const result: Record<string, number> = {};
+    let totalBytes = 0;
+
+    // Get total bytes
+    Object.values(record).forEach((bytes) => { totalBytes += bytes;})
+
+    for (const [lang, bytes] of Object.entries(record)) {
+      result[lang] = parseFloat(((bytes / totalBytes) * 100).toFixed(2));
+    }
+
+    return result;
+  };
+
   try {
     const repoRequests = REPO_NAMES.map(async (repo) => {
       // Fetch metadata on repo
@@ -48,8 +62,17 @@ export async function fetchGitHubProjects() {
         const readmeData = await readmeResponse.json();
         const decoded = atob(readmeData.content); // Decode Base64
         readmeContent = decoded;
+      }
+
+      // Fetch languages used in project
+      const languagesUsed = await fetch(`${GITHUB_API_BASE}/${GITHUB_USERNAME}/${repo}/languages`, { headers });
+      let languages: Record<string, number> = {};
+      if (languagesUsed.ok) {
+        const languagesUsedData = await languagesUsed.json();
+        languages = bytesToPercentages(languagesUsedData);
       } else {
-        console.warn(`No README found for ${repo}`);
+        // Fallback to primary language if languages API call fails
+        languages[String(data.language || 'JavaScript')] = 100;
       }
 
       // Extract readme demo video/gif if we can
@@ -71,6 +94,7 @@ export async function fetchGitHubProjects() {
         stars: data.stargazers_count,
         forks: data.forks_count,
         language: data.language || "Unknown",
+        languages,
         defaultBranch: data.default_branch,
         readme: readmeContent,
         repoDemoGifRelative,
