@@ -1,17 +1,15 @@
-@keyframes drop {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(5px);
-    }
+.hover-drop-wrapper {
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1;
+  height: 1.25em; /* Just enough to allow drop without clipping */
 }
 
-.hover-drop {
-    display: inline-block;
-    transition: transform 0.2s ease-in-out;
+.hover-drop-inner {
+  display: inline-block;
+  transition: transform 0.25s ease-in-out;
 }
 
-.hover-drop:hover {
-    animation: drop 0.2s forwards;
+.hover-drop-wrapper:hover .hover-drop-inner {
+  transform: translateY(3px);
 }

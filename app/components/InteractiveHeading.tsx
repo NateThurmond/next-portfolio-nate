@@ -19,10 +19,15 @@ export default function InteractiveHeading({
   classAdditional = ''
 }: InteractiveHeadingProps) {
 
-  const baseHeaderClass = "hover-drop cursor-pointer [text-shadow:1px_1px_0px_white] hover:tracking-wide";
+  const baseHeaderClass = "hover-drop-wrapper cursor-pointer [text-shadow:1px_1px_0px_white] hover:tracking-wide";
 
-  const Header = <h1 className={twMerge(baseHeaderClass, classAdditional)}
-    onClick={onHeadingClick}>{headingText || ''}</h1>;
+  const Header = (
+    <h1 className={twMerge(baseHeaderClass, classAdditional)} onClick={onHeadingClick}>
+      <span className="hover-drop-inner">
+        {headingText || ""}
+      </span>
+    </h1>
+  );
 
   return withLink ? <Link href={withLink} target="_blank">{Header}</Link> : Header;
 }
