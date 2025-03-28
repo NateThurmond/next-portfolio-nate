@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import InteractiveHeading from "../components/InteractiveHeading";
 
 // Define the expected props, just an array of the projects
 type ProjectTilesProps = {
@@ -37,15 +38,21 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-8 w-full mx-auto">
         {projects && sortProjects(projects).map((project, index) => (
           <div key={index} className="bg-gray-200 p-6 rounded-md shadow-md flex flex-col items-center">
-            <a
-              href={project.url}
-              className="text-gray-700 text-center text-lg font-bold transition-transform duration-200 hover:scale-105 block"
-            >
-              {project.name}
-            </a>
+            <InteractiveHeading
+              headingText={project.name}
+              withLink={project.url}
+              classAdditional={'text-black text-xl [text-shadow:1px_1px_0px_black]'}
+            />
             <div className="w-80 h-60 bg-gray-900 flex items-center justify-center mt-4">
               <img src={project.repoDemoGifAbsolute} alt="Demo" className="object-contain max-w-full max-h-full block" />
             </div>
+            <br />
+            <p className="text-black whitespace-nowrap overflow-hidden text-ellipsis">
+              {Object.entries(project.languages)
+                .slice(0, 3)
+                .map(([lang, perc]) => `${lang}: ${Math.round(perc as number)}%`)
+                .join(' • ')}
+            </p>
           </div>
         ))}
       </section>
