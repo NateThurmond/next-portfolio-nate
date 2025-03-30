@@ -22,3 +22,8 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Used atm for markdown rendered readmes for projects */
+.unstyle-all * {
+  all: revert;
+}
