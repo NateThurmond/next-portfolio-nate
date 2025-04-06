@@ -13,3 +13,25 @@
 .hover-drop-wrapper:hover .hover-drop-inner {
   transform: translateY(3px);
 }
+
+@keyframes expandFromTopLeft {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  100% {
+    width: 500px;
+    height: 16rem; /* matches max-h-64 */
+    opacity: 1;
+  }
+}
+
+.readme-popup {
+  width: 500px;
+  height: 16rem;
+  opacity: 1;
+  overflow: auto;
+  animation: expandFromTopLeft 1s ease-out forwards;
+  transform-origin: top left;
+}
