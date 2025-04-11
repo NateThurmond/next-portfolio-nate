@@ -27,11 +27,43 @@
   }
 }
 
+@keyframes fadeInScale {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .readme-popup {
   width: 500px;
   height: 16rem;
   opacity: 1;
+  max-width: 90vw;
+  max-height: 70vh;
+  overflow-y: auto;
   overflow: auto;
-  animation: expandFromTopLeft 1s ease-out forwards;
-  transform-origin: top left;
+  animation: fadeInScale 0.5s ease-out forwards;
+  transform-origin: center;
+  background-color: rgba(30, 30, 30, 0.95);
+  color: #f5f5f5;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.readme-popup-close-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 100;
+  background: transparent;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
 }

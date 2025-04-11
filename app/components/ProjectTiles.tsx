@@ -8,7 +8,8 @@ type ProjectTilesProps = {
 };
 
 export default function ProjectTiles({projects}: ProjectTilesProps) {
-    const [hoveredTileIndex, setHoveredTileIndex] = useState<number | null>(null);
+  const [hoveredTileIndex, setHoveredTileIndex] = useState<number | null>(null);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
     // Specific to my situation, define your own as needed
     const priorityOrder = [
@@ -52,6 +53,16 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
       return [before.trim(), after.trim()].join("\n");
     }
 
+    function handleMouseEnter(index: number) {
+      const timeout = setTimeout(() => setHoveredTileIndex(index), 300); // 300ms delay
+      setHoverTimeout(timeout);
+    }
+
+    function handleMouseLeave() {
+      if (hoverTimeout) clearTimeout(hoverTimeout);
+      setHoveredTileIndex(null);
+    }
+
     useEffect(() => {
       console.log('Projects available', projects);
     }, [projects]);
@@ -61,20 +72,21 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
         {projects && sortProjects(projects).map((project, index) => (
           <div
             key={index}
-            className="bg-gray-200 p-6 rounded-md shadow-md flex flex-col items-center relative"
-            onMouseLeave={() => setHoveredTileIndex(null)} >
+            className="p-6 rounded-md shadow-md flex flex-col items-center relative [background-color:rgba(30,30,30,0.95)]"
+            onMouseLeave={handleMouseLeave}
+          >
             <InteractiveHeading
               headingText={project.name}
               withLink={project.url}
-              classAdditional={'text-black text-xl [text-shadow:1px_1px_0px_black]'}
+              classAdditional={'text-xl [text-shadow:1px_1px_0px_white]'}
             />
             <div className="w-80 h-60 bg-gray-900 flex items-center justify-center mt-4">
-              {/* TO-DO: Add pop-up of parsed readme markdown as pop-up screen on mouse-enter. How Cool! */}
               <img
                 src={project.repoDemoGifAbsolute}
                 alt="Demo"
                 className="object-contain max-w-full max-h-full block"
-                onMouseEnter={() => setHoveredTileIndex(index)}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onClick={() => handleMouseEnter(index)}
               />
             </div>
 
@@ -83,9 +95,14 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
               <div
                 className={`
                   unstyle-all absolute top-0 left-0 translate-y-[70%] z-50
-                  bg-white text-black p-4 rounded shadow-lg
+                  p-4 rounded shadow-lg
                   ${hoveredTileIndex === index ? 'readme-popup' : 'hidden'}
                 `} >
+                <button
+                  className="readme-popup-close-button"
+                  onClick={() => setHoveredTileIndex(null)}
+                >⛶
+                </button>
                 <ReactMarkdown>
                   {standardizeReadme(project.readme)}
                 </ReactMarkdown>
@@ -93,7 +110,7 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
             )}
 
             <br />
-            <p className="text-black whitespace-nowrap overflow-hidden text-ellipsis">
+            <p className="whitespace-nowrap overflow-hidden text-ellipsis">
               {Object.entries(project.languages)
                 .slice(0, 3)
                 .map(([lang, perc]) => `${lang}: ${Math.round(perc as number)}%`)
