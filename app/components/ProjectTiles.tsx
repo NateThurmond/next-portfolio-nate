@@ -8,7 +8,7 @@ type ProjectTilesProps = {
 };
 
 export default function ProjectTiles({projects}: ProjectTilesProps) {
-  const [hoveredTileIndex, setHoveredTileIndex] = useState<number | null>(null);
+  const [selectedTileIndex, setSelectedTileIndex] = useState<number | null>(null);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
     // Specific to my situation, define your own as needed
@@ -53,14 +53,18 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
       return [before.trim(), after.trim()].join("\n");
     }
 
-    function handleMouseEnter(index: number) {
-      const timeout = setTimeout(() => setHoveredTileIndex(index), 300); // 300ms delay
+    function handleExpandReadme(index: number) {
+      if (selectedTileIndex === index) {
+        handleCloseReadme();
+        return;
+      }
+      const timeout = setTimeout(() => setSelectedTileIndex(index), 300); // 300ms delay
       setHoverTimeout(timeout);
     }
 
-    function handleMouseLeave() {
+    function handleCloseReadme() {
       if (hoverTimeout) clearTimeout(hoverTimeout);
-      setHoveredTileIndex(null);
+      setSelectedTileIndex(null);
     }
 
     useEffect(() => {
@@ -73,48 +77,63 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
           <div
             key={index}
             className="p-6 rounded-md shadow-md flex flex-col items-center relative [background-color:rgba(30,30,30,0.95)]"
-            onMouseLeave={handleMouseLeave}
           >
+
+            {/* Just a more stylized link with a drop effect */}
             <InteractiveHeading
               headingText={project.name}
               withLink={project.url}
               classAdditional={'text-xl [text-shadow:1px_1px_0px_white]'}
             />
+
+            {/* Button to expand the readme content for the project */}
+            <button
+              className="readme-popup-close-button"
+              onClick={() => handleExpandReadme(index)}
+            >⛶
+            </button>
+
+            {/* This is the preview image/gif pulled from the project readme displayed as a thumbnail here */}
             <div className="w-80 h-60 bg-gray-900 flex items-center justify-center mt-4">
               <img
                 src={project.repoDemoGifAbsolute}
                 alt="Demo"
                 className="object-contain max-w-full max-h-full block"
-                onMouseEnter={() => handleMouseEnter(index)}
-                onClick={() => handleMouseEnter(index)}
               />
             </div>
 
             {/* Readme popup */}
-            {hoveredTileIndex === index && (
+            {selectedTileIndex === index && (
               <div
                 className={`
                   unstyle-all absolute top-0 left-0 translate-y-[70%] z-50
                   p-4 rounded shadow-lg
-                  ${hoveredTileIndex === index ? 'readme-popup' : 'hidden'}
-                `} >
+                  ${selectedTileIndex === index ? 'readme-popup' : 'hidden'}
+                `}
+              >
+
+                {/* A simple X button to close the readme */}
                 <button
                   className="readme-popup-close-button"
-                  onClick={() => setHoveredTileIndex(null)}
-                >⛶
+                  onClick={() => handleCloseReadme()}
+                >𐔧
                 </button>
+
+                {/* The actual Readme Content */}
                 <ReactMarkdown>
                   {standardizeReadme(project.readme)}
                 </ReactMarkdown>
               </div>
             )}
 
+            {/* Languages used in project (top 3) */}
             <br />
             <p className="whitespace-nowrap overflow-hidden text-ellipsis">
               {Object.entries(project.languages)
                 .slice(0, 3)
                 .map(([lang, perc]) => `${lang}: ${Math.round(perc as number)}%`)
-                .join(' • ')}
+                .join(' • ')
+              }
             </p>
           </div>
         ))}
