@@ -94,11 +94,11 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
             </button>
 
             {/* This is the preview image/gif pulled from the project readme displayed as a thumbnail here */}
-            <div className="w-80 h-60 bg-gray-900 flex items-center justify-center mt-4">
+            <div className="w-full max-w-full h-60 bg-gray-900 flex items-center justify-center mt-4 overflow-hidden rounded">
               <img
                 src={project.repoDemoGifAbsolute}
                 alt="Demo"
-                className="object-contain max-w-full max-h-full block"
+                className="max-w-full max-h-full object-contain"
               />
             </div>
 
