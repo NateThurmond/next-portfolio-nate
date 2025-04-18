@@ -128,7 +128,7 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
 
             {/* Languages used in project (top 3) */}
             <br />
-            <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+            <p className="w-full max-w-full whitespace-nowrap overflow-hidden text-ellipsis text-center">
               {Object.entries(project.languages)
                 .slice(0, 3)
                 .map(([lang, perc]) => `${lang}: ${Math.round(perc as number)}%`)
