@@ -50,7 +50,11 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
 
       before = before.replace(/(^|\n)#{1,6} .*(\n[\s\S]*)?$/, '');
 
-      return [before.trim(), after.trim()].join("\n");
+      // Add hr line if one is not present
+      after = after.trim();
+      after = (after.slice(0, 3) !== '---') ? `---\n${after}` : after;
+
+      return [before.trim(), after].join("\n");
     }
 
     function handleExpandReadme(index: number) {
@@ -106,7 +110,7 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
             {selectedTileIndex === index && (
               <div
                 className={`
-                  unstyle-all absolute top-0 left-0 translate-y-[70%] z-50
+                  unstyle-all absolute top-0 translate-y-[10%] z-999
                   p-4 rounded shadow-lg
                   ${selectedTileIndex === index ? 'readme-popup' : 'hidden'}
                 `}
@@ -118,6 +122,7 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
                   onClick={() => handleCloseReadme()}
                 >𐔧
                 </button>
+                <br/>
 
                 {/* The actual Readme Content */}
                 <ReactMarkdown>
