@@ -75,6 +75,22 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
       console.log('Projects available', projects);
     }, [projects]);
 
+    useEffect(() => {
+      // Doc event listener function to close the readme popup when clicking outside of it
+      function docClickList(event: MouseEvent) {
+        const popup = document.getElementById('readMePopup');
+        if (popup && !popup.contains(event.target as Node)) {
+          setSelectedTileIndex(null);
+        }
+      }
+
+      // Doc click event listener to close the readme popup on outside clicks
+      document.addEventListener('click', docClickList);
+      return () => {
+        document.removeEventListener('click', docClickList);
+      };
+    }, []);
+
     return (
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-8 w-full mx-auto">
         {projects && sortProjects(projects).map((project, index) => (
@@ -109,6 +125,7 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
             {/* Readme popup */}
             {selectedTileIndex === index && (
               <div
+                id="readMePopup"
                 className={`
                   unstyle-all absolute top-0 translate-y-[10%] z-999
                   p-4 rounded shadow-lg
