@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 
 // Define the expected props, just an array of the projects
 type ProjectTilesProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   projects?: any[];
 };
 
@@ -22,6 +23,7 @@ export default function ProjectTiles({projects}: ProjectTilesProps) {
     ]
 
     // List the projects out in such a way that they look okay for my specific repos
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function sortProjects(projects: any[]) {
       return [...projects].sort((a, b) => {
         const indexA = priorityOrder.indexOf(a.name);
