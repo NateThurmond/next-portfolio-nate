@@ -27,7 +27,7 @@ export default function Header() {
         <h1 className="text-2xl font-bold text-gray-700">Nathan Thurmond</h1>
         <nav className="space-x-4">
           <a href="https://github.com/NateThurmond" className="text-gray-700 hover:text-black">GitHub</a>
-          <a href="/resume" className="text-gray-700 hover:text-black">Resume</a>
+          <a href="/Nathan_Resume_Short.pdf" download target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-black">Resume</a>
         </nav>
       </div>
     </header>
