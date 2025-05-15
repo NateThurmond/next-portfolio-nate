@@ -24,6 +24,7 @@ export default function Header() {
       style={{ height: `${headerSize}px`, opacity }}
     >
       <div className="flex justify-between items-center max-w-4xl mx-auto h-full">
+        {/* May change this to link to new domain name vercel-routed me.nathanthurmond.com */}
         <h1 className="text-xl sm:text-2xl font-bold text-gray-700 leading-tight">Nathan Thurmond</h1>
         <nav className="space-x-4">
           <a href="https://github.com/NateThurmond" className="text-gray-700 hover:text-black">GitHub</a>
